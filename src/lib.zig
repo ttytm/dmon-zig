@@ -27,17 +27,19 @@ pub fn deinit() void {
 
 /// Starts to watch the `root_dir` and triggers the given `callback` on changes.
 pub fn watch(
+	comptime Context: type,
 	root_dir: [*:0]const u8,
 	callback: fn (
+		comptime Context: type,
 		WatchId,
 		action: Action,
 		root_dir: [*:0]const u8,
 		file_path: [*:0]const u8,
 		old_file_path: ?[*:0]const u8,
-		data: ?*anyopaque,
+		data: *Context,
 	) void,
 	flags: WatchFlags,
-	data: ?*anyopaque,
+	context: *Context,
 ) WatchId {
 	const cbHandler = struct {
 		fn handle(
@@ -48,14 +50,14 @@ pub fn watch(
 			old_file_path: [*c]const u8,
 			user_data: ?*anyopaque,
 		) callconv(.C) void {
-			callback(watch_id.id, @enumFromInt(action), root_dir_, file_path, old_file_path, user_data);
+			const ptr: *Context = @alignCast(@ptrCast(user_data));
+			callback(Context, watch_id.id, @enumFromInt(action), root_dir_, file_path, old_file_path, ptr);
 		}
 	};
 	var c_flags: c_uint = 0;
 	if (flags.recursive) c_flags |= 0x1;
 	if (flags.follow_symlinks) c_flags |= 0x2;
-	const id = bindings.dmon_watch(root_dir, cbHandler.handle, c_flags, data);
-	return id.id;
+	return bindings.dmon_watch(root_dir, cbHandler.handle, c_flags, context).id;
 }
 
 /// Stops watching the given `WatchId`.
