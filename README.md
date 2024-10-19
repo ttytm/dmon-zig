@@ -42,7 +42,7 @@ const dmon = @import("dmon");
 const print = std.debug.print;
 
 const Context = struct {
-	triggerCount: u32 = 0,
+	trigger_count: u32 = 0,
 };
 
 pub fn watchCb(
@@ -58,7 +58,7 @@ pub fn watchCb(
 	print("Root: {s}\n", .{root_dir});
 	print("File path: {s}\n", .{file_path});
 	print("Old file path: {s}\n", .{old_file_path orelse ""});
-	context.triggerCount += 1;
+	context.trigger_count += 1;
 }
 
 pub fn main() !void {
@@ -70,7 +70,7 @@ pub fn main() !void {
 	print("Starting to watch: {s}; Watcher ID: {d}\n", .{ watch_path, id });
 
 	while (true) {
-		if (ctx.triggerCount >= 3) break;
+		if (ctx.trigger_count >= 3) break;
 	}
 }
 ```
