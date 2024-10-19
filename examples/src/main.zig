@@ -7,29 +7,36 @@ const Context = struct {
 };
 
 pub fn watchCb(
+	comptime Ctx: type,
 	watch_id: dmon.WatchId,
 	action: dmon.Action,
 	root_dir: [*:0]const u8,
 	file_path: [*:0]const u8,
 	old_file_path: ?[*:0]const u8,
-	context: ?*anyopaque,
+	context: *Ctx,
 ) void {
 	_ = watch_id;
 	print("Action: {}\n", .{action});
 	print("Root: {s}\n", .{root_dir});
 	print("File path: {s}\n", .{file_path});
 	print("Old file path: {s}\n", .{old_file_path orelse ""});
-	var ctx: *Context = @ptrCast(@alignCast(context));
-	ctx.triggerCount += 1;
+	context.triggerCount += 1;
 }
 
-pub fn main() void {
+pub fn main() !void {
+	var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+	defer arena.deinit();
+	const alloc = arena.allocator();
+
 	dmon.init();
 	defer dmon.deinit();
 
 	var ctx = Context{ .triggerCount = 0 };
-	const id = dmon.watch("/home/t/Sync/Dev/Zig", watchCb, .{ .recursive = true }, &ctx);
-	print("Watch ID: {d}\n", .{id});
+	const cwd_path = try std.fs.cwd().realpathAlloc(alloc, ".");
+	const z_path = try alloc.dupeZ(u8, cwd_path);
+
+	const id = dmon.watch(Context, z_path, watchCb, .{ .recursive = true }, &ctx);
+	print("Starting to watch: {s}; Watcher ID: {d}\n", .{ z_path, id });
 
 	while (true) {
 		if (ctx.triggerCount >= 3) break;
