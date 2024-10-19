@@ -20,6 +20,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Setup dependencies
         if: runner.os == 'Linux'
         run: sudo apt -qq install libgtk-3-dev
