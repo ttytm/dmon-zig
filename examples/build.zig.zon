@@ -1,0 +1,12 @@
+.{
+	.name = "dmon-examples",
+	.version = "0.0.0",
+	.dependencies = .{
+		.dmon = .{ .path = "../" },
+	},
+	.paths = .{
+		"build.zig",
+		"build.zig.zon",
+		"src",
+	},
+}
