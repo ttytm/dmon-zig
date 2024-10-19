@@ -8,14 +8,13 @@ const Context = struct {
 
 pub fn watchCb(
 	comptime Ctx: type,
-	watch_id: dmon.WatchId,
+	_: dmon.WatchId,
 	action: dmon.Action,
 	root_dir: [*:0]const u8,
 	file_path: [*:0]const u8,
 	old_file_path: ?[*:0]const u8,
 	context: *Ctx,
 ) void {
-	_ = watch_id;
 	print("Action: {}\n", .{action});
 	print("Root: {s}\n", .{root_dir});
 	print("File path: {s}\n", .{file_path});
