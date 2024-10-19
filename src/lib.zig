@@ -1,5 +1,5 @@
 const std = @import("std");
-const bindings = @import("dmon.zig");
+const bindings = @import("bindings/dmon.zig");
 
 // Ref.: `dmon_action_t`
 pub const Action = enum(c_uint) {
