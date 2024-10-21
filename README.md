@@ -75,7 +75,14 @@ pub fn main() !void {
 }
 ```
 
-Simple example watching the cwd: [`dmon-zig/examples/src/main.zig`](https://github.com/ttytm/dmon-zig/blob/main/examples/src/main.zig)
+For a simple local example watching the cwd: [`dmon-zig/examples/src/main.zig`](https://github.com/ttytm/dmon-zig/blob/main/examples/src/main.zig)
+
+```sh
+# Perform a lightweight, filtered, yet complete clone
+git clone --recursive --shallow-submodules --filter=blob:none \
+  https://github.com/ttytm/dmon-zig && \
+cd dmon-zig/examples
+```
 
 ```sh
 # dmon-zig/examples
