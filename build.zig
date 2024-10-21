@@ -12,7 +12,7 @@ pub fn build(b: *std.Build) void {
 		.link_libc = true,
 	});
 	module.addCSourceFile(.{ .file = b.path("src/bindings/dmon.c"), .flags = &[_][]const u8{"-DDMON_IMPL"} });
-	module.addIncludePath(b.path("src/bindings/dmon"));
+	module.addIncludePath(b.path("src/bindings/dmon/dmon.h"));
 	if (builtin.os.tag.isDarwin()) {
 		module.linkFramework("CoreServices", .{});
 	}
